@@ -104,7 +104,7 @@ predictions = x@coefs
 #calculate the error using the optimal coefficients
 error_model = y - predictions
 
-print(f"L2 norm  of the errors_model": {np.linalg.norm(error_model)})
+print(f"L2 norm  of the errors_model: {np.linalg.norm(error_model)}")
 #print the 
 
 

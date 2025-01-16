@@ -15,8 +15,8 @@ print(f"Columns: {columns}")
 # save the column names to a file for accessing later as text file
 np.savetxt('columns.txt', columns, fmt='%s')
 
-# use Square_Feet, Garage_Size, Location_Score, Distance_to_Center as features
-x = df[['Square_Feet         ', 'Garage_Size ', 'Location_Score       ', 'Distance_to_Center   ']]
+# use all features available in the dataset
+x = df.drop(columns=['Price']).values
 
 # use price as the target
 y = df['Price'].values
@@ -88,6 +88,7 @@ grad_matrix = -2/n_samples * x.T @ (y - x @ coefs)
 # x.T @ x @ coefs = x.T @ y. This equation is called the normal equation
 
 coefs = np.linalg.inv(x.T @ x) @ x.T @ y
+np.savetxt('Coeffs_INV.csv', coefs, delimiter=',')
 
 # predict the price for each sample in X
 predictions = x @ coefs
@@ -132,7 +133,7 @@ for i in range(n_features, -1, -1):
     coeffs_qr_loop[i] /= R[i, i]
 
 # save coeffs_qr_loop to a file named coeffs_qr_loop.csv
-np.savetxt('coeffs_qr_loop.csv', coeffs_qr_loop, delimiter=',')
+np.savetxt('Coeffs_QR_loop.csv', coeffs_qr_loop, delimiter=',')
 
 # solve the normal equation using SVD
 # x = U S Vt
@@ -151,8 +152,9 @@ U, S, Vt = np.linalg.svd(x, full_matrices=False)
 # Find the inverse of X in the least square sense
 # pseudo-inverse of X
 # To complete: Calculate the pseudo-inverse of X using SVD
-X_dagger = Vt.T @ np.linalg.inv(np.diag(S)) @ U.T
+S_inv = np.diag(1/S)
+X_dagger = Vt.T @ S_inv @ U.T
 coeffs_svd = X_dagger @ y
 
 # save coeffs to a file named coeffs.csv
-np.savetxt('coeffs_SVD.csv', coeffs_svd, delimiter=',')
+np.savetxt('Coeffs_SVD.csv', coeffs_svd, delimiter=',')

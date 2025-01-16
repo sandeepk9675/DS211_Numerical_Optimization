@@ -16,7 +16,7 @@ print(f"Columns: {columns}")
 np.savetxt('columns.txt', columns, fmt='%s')
 
 # use Square_Feet, Garage_Size, Location_Score, Distance_to_Center as features
-x = df[['Square_Feet', 'Garage_Size', 'Location_Score', 'Distance_to_Center']]
+x = df[['Square_Feet         ', 'Garage_Size ', 'Location_Score       ', 'Distance_to_Center   ']]
 
 # use price as the target
 y = df['Price'].values
@@ -155,4 +155,4 @@ X_dagger = Vt.T @ np.linalg.inv(np.diag(S)) @ U.T
 coeffs_svd = X_dagger @ y
 
 # save coeffs to a file named coeffs.csv
-np.savetxt('coeffs.csv', coeffs_svd, delimiter=',')
+np.savetxt('coeffs_SVD.csv', coeffs_svd, delimiter=',')

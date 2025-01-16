@@ -73,3 +73,100 @@ print(f"L2 norm of the errors: {np.linalg.norm(errors)}")
 print(f"L2 norm of the relative error: {np.linalg.norm(rel_errors)}")
 
 
+
+
+
+# objective function: f(coefs) = 1/n_samples*\sum_{i=1}^{n_samples} (y_i - x_i^T coefs)^2
+
+
+# What is the solution?
+# A solution is a set of coefficients that minimize the objective function
+
+# How to find the solution?
+# by searching for the coefficeints at which the gradient of the objective function is zero
+# Or I can set the gradient of the objective function  to zero and solve for the coefficients
+
+# Write the loss matrix in terms of the data and coefs
+loss = 1/n_samples * (y - (x@coefs)).T @ (y - x@coefs)
+
+
+# We set the gradient of the loss with respect to the coefficients
+grad_matrix = -2/n_samples * x.T @ (y - x@coefs)
+# we set the gradient = zero and solve for the coefficients
+# x.T @ y = x.T@ x @ coefs
+#x.T@ x @  =   x.T @ y . this equation is called the normal equation    
+
+coefs = np.linalg.inv(x.T @ x) @ x.T @ y
+
+#predict the price for each sample in X
+predictions = x@coefs
+
+#calculate the error using the optimal coefficients
+error_model = y - predictions
+
+print(f"L2 norm  of the errors_model": {np.linalg.norm(error_model)})
+#print the 
+
+
+
+
+
+
+# calculate the rank of the X.T @ X
+rank_xTx = np.linalg.matrix_rank(x.T @ x)
+print(f"Rank of X.T @ X: {rank_xTx}")
+
+#solve the normal equation using matrix decomposition
+#QR decomposition
+Q, R = np.linalg.qr(x)
+
+print(f"shape of Q: {Q.shape}")
+print(f"shape of R: {R.shape}")
+
+#write R to the file named R.csv
+np.savetxt('R.csv', R, delimiter=',')
+
+# R*coeffs = b
+sol = Q.T@ Q
+np.savetxt('sol.csv', sol, delimiter=',')
+
+#x = QR
+#x.T @ x = R.T @ Q.T @ Q @ R = R.T @ R
+#R*coeffs = Q.T @ y
+
+b = Q.T @ y
+print(f"shape of b: {b.shape}")
+print(f"shape of R: {R.shape}")
+
+#coeffs_qr = np.linalg.inv(R) @ b
+#loop to solve R*coeffs = b using back substitution
+coeffs_qr_loop = np.zeros(n_features+1)
+
+for i in range(n_features, -1, -1):
+    coeffs_qr_loop[i] = b[i]
+    for j in range(i+1, n_features+1):
+        coeffs_qr_loop[i] -= R[i, j]*coeffs_qr_loop[j]
+    coeffs_qr_loop[i] /= R[i, i]
+
+#sav coeffs_qr_loop to a file named coeff_qr_loop.csv
+
+#solve the normal equation using SVD
+# x = U S Vt
+
+#Eigen decomposition of a square matrix
+# A = V D V^T
+# A^-1 = V D^-1 V^T
+# X*coeffs = y
+# A = X^T @ X
+
+# Normal equation: X^T @ X @ coeffs = X^T @ y
+# Xdagger = (X^T @ X)^-1 @ X^T
+
+U, S, Vt = np.linalg.svd(x, full_matrices=False)
+
+# Find the inverse of X in the least square sense
+#pseudi inverse of X
+
+# To complete: Calculate the pseudo inverse of X
+X_dagger = np.linalg.inv(x.T @ x) @ x.T
+coeffs = X_dagger @ y

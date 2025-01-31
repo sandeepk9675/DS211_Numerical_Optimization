@@ -72,7 +72,7 @@ Z = f([X, Y])
 cfp = plt.contourf(X, Y, Z, levels=np.linspace(0, 10, 10), cmap='Blues', extend='max', vmin=0, vmax=10)
 
 # Visualize the path of descent and mark with number of iterations
-plt.plot(path_newton[:, 0], path_newton[:, 1], 'o-')
+plt.plot(path_newton[:, 0], path_newton[:, 1], 'o')
 for i, txt in enumerate(range(num_iter_newton + 1)):
     plt.annotate(txt, (path_newton[i, 0], path_newton[i, 1]))\
     
